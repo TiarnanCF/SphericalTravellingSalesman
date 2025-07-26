@@ -1,4 +1,5 @@
 import math
+from abc import ABC, abstractmethod
 
 tolerance: float = 0.0000000001
 
@@ -8,20 +9,30 @@ def degrees_to_radians(degrees: float) -> float:
 def radians_to_degrees(radiants: float) -> float:
     return (radiants * 180) / math.pi
 
-class CartesianCoordinates:
+class Coordinate(ABC):
+    @abstractmethod
+    def calculate_distance(self, other_coordinate) -> float:
+        pass
+    
+    @abstractmethod
+    def calculate_manhattan_distance(self, other_coordinate) -> float:
+        pass
+
+
+class CartesianCoordinates(Coordinate):
     def __init__(self, x: float, y: float, z: float):
         self.x = x
         self.y = y
         self.z = z
 
-class SphericalCoordinate:
+class SphericalCoordinate(Coordinate):
     def __init__(self, longitude, latitude):
         self.longitude = longitude
         self.latitude = latitude
 
     ## Up to a rescaling we may assume points lie on the unit sphere
     ## Therefore, the spherical distance is simply the central angle
-    def calculate_spherical_distance(self, other_spherical_coordinate) -> float:
+    def calculate_distance(self, other_spherical_coordinate) -> float:
         delta_longitude: float = math.abs(self.longitude - other_spherical_coordinate.longitude)
         central_angle: float = math.acos(
             math.sin(degrees_to_radians(self.Latitude)) * math.sin(degrees_to_radians(other_spherical_coordinate.Latitude))
@@ -32,7 +43,7 @@ class SphericalCoordinate:
     ## Can think of as distance from A to B then distance from B to C
     ## For which B has the latitude of A and the longitude of C
     ## If longitude is unchanged distance is just delta latitude
-    def calculate_manhattan_spherical_distance(self, other_spherical_coordinate) -> float:
+    def calculate_manhattan_distance(self, other_spherical_coordinate) -> float:
         midpoint: SphericalCoordinate = SphericalCoordinate(self.latitude, other_spherical_coordinate.longitude)
         distance_self_to_midpoint: float = self.calculate_spherical_distance(midpoint)
         distance_midpoint_to_other: float = math.abs(self.latitude - other_spherical_coordinate.latitude)
