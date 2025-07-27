@@ -78,6 +78,6 @@ class Sphere:
     def find_corner_point(self) -> SphericalCoordinate:
         (min_longitude, max_longitude): tuple[float, float] = self.containing_longitudes()
         if max_longitude - min_longitude > half_way_longitude:
-            return None
+            return None # Handle when coordinates span across more than one hemisphere
 
         return calculate_corner_coordinate(self.spherical_coordinates)
