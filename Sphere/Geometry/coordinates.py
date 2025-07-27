@@ -48,11 +48,11 @@ class SphericalCoordinates(Coordinate):
     
     ## Can think of as distance from A to B then distance from B to C
     ## For which B has the latitude of A and the longitude of C
-    ## If longitude is unchanged distance is just delta latitude
+    ## If longitude is unchanged distance is just delta latitude (in radians)
     def calculate_manhattan_distance(self, other_spherical_coordinate) -> float:
         midpoint: SphericalCoordinates = SphericalCoordinates(other_spherical_coordinate.longitude, self.latitude)
         distance_self_to_midpoint: float = self.calculate_distance(midpoint)
-        distance_midpoint_to_other: float = abs(self.latitude - other_spherical_coordinate.latitude)
+        distance_midpoint_to_other: float = degrees_to_radians(abs(self.latitude - other_spherical_coordinate.latitude))
         return distance_self_to_midpoint + distance_midpoint_to_other
 
 class CoordinateConverter:
