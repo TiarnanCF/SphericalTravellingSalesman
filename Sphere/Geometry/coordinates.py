@@ -31,7 +31,7 @@ class CartesianCoordinates(Coordinate):
     def calculate_manhattan_distance(self, other_coordinate) -> float:
         return abs(self.x - other_coordinate.x) + abs(self.y - other_coordinate.y) + abs(self.z - other_coordinate.z)
 
-class SphericalCoordinate(Coordinate):
+class SphericalCoordinates(Coordinate):
     def __init__(self, longitude, latitude):
         self.longitude = longitude
         self.latitude = latitude
@@ -41,7 +41,7 @@ class SphericalCoordinate(Coordinate):
     def calculate_distance(self, other_spherical_coordinate) -> float:
         delta_longitude: float = abs(self.longitude - other_spherical_coordinate.longitude)
         central_angle: float = math.acos(
-            math.sin(degrees_to_radians(self.Latitude)) * math.sin(degrees_to_radians(other_spherical_coordinate.Latitude))
+            math.sin(degrees_to_radians(self.latitude)) * math.sin(degrees_to_radians(other_spherical_coordinate.latitude))
             + math.cos(degrees_to_radians(self.latitude)) * math.cos(degrees_to_radians(other_spherical_coordinate.latitude)) * math.cos(delta_longitude)
             )
         return central_angle
@@ -50,18 +50,18 @@ class SphericalCoordinate(Coordinate):
     ## For which B has the latitude of A and the longitude of C
     ## If longitude is unchanged distance is just delta latitude
     def calculate_manhattan_distance(self, other_spherical_coordinate) -> float:
-        midpoint: SphericalCoordinate = SphericalCoordinate(self.latitude, other_spherical_coordinate.longitude)
-        distance_self_to_midpoint: float = self.calculate_spherical_distance(midpoint)
+        midpoint: SphericalCoordinates = SphericalCoordinates(other_spherical_coordinate.longitude, self.latitude)
+        distance_self_to_midpoint: float = self.calculate_distance(midpoint)
         distance_midpoint_to_other: float = abs(self.latitude - other_spherical_coordinate.latitude)
         return distance_self_to_midpoint + distance_midpoint_to_other
 
 class CoordinateConverter:
-    def cartesian_to_spherical(cartesian_coordinates: CartesianCoordinates) -> SphericalCoordinate:
+    def cartesian_to_spherical(cartesian_coordinates: CartesianCoordinates) -> SphericalCoordinates:
         longitude: float = 90 if abs(cartesian_coordinates.x) < tolerance else radians_to_degrees(math.atan(cartesian_coordinates.y / cartesian_coordinates.x))
         latitude: float = radians_to_degrees(math.acos(cartesian_coordinates.z))
-        return SphericalCoordinate(longitude, latitude)
+        return SphericalCoordinates(longitude, latitude)
 
-    def spherical_to_cartesian(spherical_coordinates: SphericalCoordinate) -> CartesianCoordinates:
+    def spherical_to_cartesian(spherical_coordinates: SphericalCoordinates) -> CartesianCoordinates:
         return CartesianCoordinates(
             x = math.sin(degrees_to_radians(spherical_coordinates.latitude)) * math.cos(degrees_to_radians(spherical_coordinates.longitude)),
             y = math.sin(degrees_to_radians(spherical_coordinates.latitude)) * math.sin(degrees_to_radians(spherical_coordinates.longitude)),

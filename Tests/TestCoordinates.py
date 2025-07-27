@@ -28,7 +28,7 @@ class TestCartestianCoordinates(unittest.TestCase):
         z: float = 3.5
 
         coordinates: CartesianCoordinates = CartesianCoordinates(x,y,z)
-        self.assertTrue(isinstance(coordinates, CartesianCoordinates))
+        self.assertIsInstance(coordinates, CartesianCoordinates)
         self.assertEqual(coordinates.x, x)
         self.assertEqual(coordinates.y, y)
         self.assertEqual(coordinates.z, z)
@@ -43,6 +43,29 @@ class TestCartestianCoordinates(unittest.TestCase):
         self.assertAlmostEqual(self.coordinates[1].calculate_manhattan_distance(self.coordinates[1]), 0)
         self.assertAlmostEqual(self.coordinates[1].calculate_manhattan_distance(self.coordinates[2]), 11.3)
         self.assertAlmostEqual(self.coordinates[2].calculate_manhattan_distance(self.coordinates[2]), 0)
+
+class TestSphericalCoordinates(unittest.TestCase):
+
+    def setUp(self):
+        self.coordinates = [SphericalCoordinates(90,90), SphericalCoordinates(-156,30), SphericalCoordinates(-44,23), SphericalCoordinates(-44,57)]
+
+    def test_init(self):
+
+        longitude: float = 15.4
+        latitude: float = 44.7
+
+        coordinates: SphericalCoordinates = SphericalCoordinates(longitude, latitude)
+        self.assertIsInstance(coordinates, SphericalCoordinates)
+        self.assertEqual(coordinates.longitude, longitude)
+        self.assertEqual(coordinates.latitude, latitude)
+        
+    def test_calculate_distance(self):
+        self.assertAlmostEqual(self.coordinates[0].calculate_distance(self.coordinates[0]), 0)
+        
+    def test_calculate_manhattan_distance(self):
+        self.assertAlmostEqual(self.coordinates[0].calculate_manhattan_distance(self.coordinates[0]), 0)
+        self.assertAlmostEqual(self.coordinates[2].calculate_manhattan_distance(self.coordinates[3]),34)
+        self.assertAlmostEqual(self.coordinates[1].calculate_manhattan_distance(self.coordinates[2]),1.6751697214)
 
 
 if __name__ == '__main__':
