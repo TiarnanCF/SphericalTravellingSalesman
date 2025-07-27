@@ -9,7 +9,8 @@ def degrees_to_radians(degrees: float) -> float:
 def radians_to_degrees(radiants: float) -> float:
     return (radiants * 180) / math.pi
 
-class Coordinate(ABC):
+class Coordinates(ABC):
+
     @abstractmethod
     def calculate_distance(self, other_coordinate) -> float:
         pass
@@ -18,8 +19,8 @@ class Coordinate(ABC):
     def calculate_manhattan_distance(self, other_coordinate) -> float:
         pass
 
+class CartesianCoordinates(Coordinates):
 
-class CartesianCoordinates(Coordinate):
     def __init__(self, x: float, y: float, z: float):
         self.x = x
         self.y = y
@@ -31,7 +32,8 @@ class CartesianCoordinates(Coordinate):
     def calculate_manhattan_distance(self, other_coordinate) -> float:
         return abs(self.x - other_coordinate.x) + abs(self.y - other_coordinate.y) + abs(self.z - other_coordinate.z)
 
-class SphericalCoordinates(Coordinate):
+class SphericalCoordinates(Coordinates):
+
     def __init__(self, longitude, latitude):
         self.longitude = longitude
         self.latitude = latitude
@@ -56,6 +58,7 @@ class SphericalCoordinates(Coordinate):
         return distance_self_to_midpoint + distance_midpoint_to_other
 
 class CoordinateConverter:
+
     def cartesian_to_spherical(cartesian_coordinates: CartesianCoordinates) -> SphericalCoordinates:
         longitude: float = 90 if abs(cartesian_coordinates.x) < tolerance else radians_to_degrees(math.atan(cartesian_coordinates.y / cartesian_coordinates.x))
         latitude: float = radians_to_degrees(math.acos(cartesian_coordinates.z))
