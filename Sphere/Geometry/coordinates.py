@@ -42,7 +42,7 @@ class SphericalCoordinates(Coordinate):
         delta_longitude: float = abs(self.longitude - other_spherical_coordinate.longitude)
         central_angle: float = math.acos(
             math.sin(degrees_to_radians(self.latitude)) * math.sin(degrees_to_radians(other_spherical_coordinate.latitude))
-            + math.cos(degrees_to_radians(self.latitude)) * math.cos(degrees_to_radians(other_spherical_coordinate.latitude)) * math.cos(delta_longitude)
+            + math.cos(degrees_to_radians(self.latitude)) * math.cos(degrees_to_radians(other_spherical_coordinate.latitude)) * math.cos(degrees_to_radians(delta_longitude))
             )
         return central_angle
     

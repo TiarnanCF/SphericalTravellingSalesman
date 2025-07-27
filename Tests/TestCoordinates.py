@@ -61,13 +61,36 @@ class TestSphericalCoordinates(unittest.TestCase):
         
     def test_calculate_distance(self):
         self.assertAlmostEqual(self.coordinates[0].calculate_distance(self.coordinates[0]), 0)
-        #self.assertAlmostEqual(self.coordinates[1].calculate_distance(self.coordinates[2]),1.6751697214)
+        self.assertAlmostEqual(self.coordinates[1].calculate_distance(self.coordinates[2]),1.675,2)
         self.assertAlmostEqual(self.coordinates[2].calculate_distance(self.coordinates[3]),0.5934119456780721)
         
     def test_calculate_manhattan_distance(self):
         self.assertAlmostEqual(self.coordinates[0].calculate_manhattan_distance(self.coordinates[0]), 0)
         self.assertAlmostEqual(self.coordinates[2].calculate_manhattan_distance(self.coordinates[3]),0.5934119456780721)
-        #self.assertAlmostEqual(self.coordinates[1].calculate_manhattan_distance(self.coordinates[2]),1.6751697214)
+        self.assertAlmostEqual(self.coordinates[1].calculate_manhattan_distance(self.coordinates[2]),1.724,2)
+
+class TestCoordinateConverter(unittest.TestCase):
+
+    def setUp(self):
+        self.converter = CoordinateConverter()
+        self.coordinates = [ 
+            (SphericalCoordinates(90,90), CartesianCoordinates(0,1,0)),
+            (SphericalCoordinates(0,90), CartesianCoordinates(1,0,0)),
+            (SphericalCoordinates(0,0), CartesianCoordinates(0,0,1))]
+
+    def test_cartesian_to_spherical(self):
+        for coordinates_pair in self.coordinates:
+            spherical_coordinates = CoordinateConverter.cartesian_to_spherical(coordinates_pair[1])
+            self.assertAlmostEqual(spherical_coordinates.latitude, coordinates_pair[0].latitude)
+            if spherical_coordinates.latitude not in (0, 180):
+                self.assertAlmostEqual(spherical_coordinates.longitude, coordinates_pair[0].longitude)
+        
+    def test_spherical_to_cartesian(self):
+        for coordinates_pair in self.coordinates:
+            cartesian_coordinates = CoordinateConverter.spherical_to_cartesian(coordinates_pair[0])
+            self.assertAlmostEqual(cartesian_coordinates.x, coordinates_pair[1].x)
+            self.assertAlmostEqual(cartesian_coordinates.y, coordinates_pair[1].y)
+            self.assertAlmostEqual(cartesian_coordinates.z, coordinates_pair[1].z)
 
 if __name__ == '__main__':
     unittest.main()
